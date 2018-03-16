@@ -4,9 +4,9 @@ mov ds,ax
 
 
 enumerate:
-	cmp byte [device_no],0x1F
-	je increment_bus_no
-	cmp byte [bus_no],0xFF
+	cmp byte [device_no],0x1F	; there could be 256 buses
+	je increment_bus_no 		
+	cmp byte [bus_no],0xFF		; there could be 32 devices in each bus
 	je end
 	mov eax,0
 	or al,[bus_no]
@@ -20,7 +20,7 @@ enumerate:
 	mov dx,[CONFIG_DATA]
 	in eax,dx
 	add byte [device_no],1
-	cmp eax,0xFFFFFFFF
+	cmp eax,0xFFFFFFFF			; returns 0xFFFFFFFF for non-existing devices
 	je enumerate
 increment:
 	add byte [device_count],1
@@ -38,8 +38,8 @@ end:
 
 	
 
-CONFIG_ADDRESS dw 0x0CF8
-CONFIG_DATA dw 0x0CFC
+CONFIG_ADDRESS dw 0x0CF8		; PCI Address Port
+CONFIG_DATA dw 0x0CFC			; PCI Data Port
 bus_no db 0xFF
 device_no db 0x1F
 device_count db 0x00

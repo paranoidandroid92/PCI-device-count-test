@@ -32,6 +32,7 @@ increment_bus_no:
 
 end:
 	mov dword eax,[device_count]
+	hlt
 	jmp end
 
 

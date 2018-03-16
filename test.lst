@@ -9,7 +9,7 @@
      9 0000000C 803E[6400]FF            	cmp byte [bus_no],0xFF		; there could be 32 devices in each bus
     10 00000011 7446                    	je end
     11                                  
-    12                                  	;   31    30-24 	 23-16		    15-11 			  10-8		 		7-2		    1-0
+    12                                  	;   31    30-24      23-16         15-11              10-8              7-2        1-0
     13                                  	; +---+----------+------------+---------------+-----------------+-----------------+----+
     14                                  	; | E | Reserved | Bus Number | Device Number | Function Number | Register Number | 00 |
     15                                  	; +---+----------+------------+---------------+-----------------+-----------------+----+
@@ -46,8 +46,8 @@
     46                                  
     47 00000060 F80C                    CONFIG_ADDRESS dw 0x0CF8		; PCI Address Port
     48 00000062 FC0C                    CONFIG_DATA dw 0x0CFC			; PCI Data Port
-    49 00000064 FF                      bus_no db 0xFF
-    50 00000065 1F                      device_no db 0x1F
+    49 00000064 00                      bus_no db 0x00
+    50 00000065 00                      device_no db 0x00
     51 00000066 00                      device_count db 0x00
     52 00000067 00<rept>                times 510-($-$$) db 0x00
     53 000001FE 55                      db 0x55

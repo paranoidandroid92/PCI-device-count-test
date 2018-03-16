@@ -46,8 +46,8 @@ end:
 
 CONFIG_ADDRESS dw 0x0CF8		; PCI Address Port
 CONFIG_DATA dw 0x0CFC			; PCI Data Port
-bus_no db 0xFF
-device_no db 0x1F
+bus_no db 0x00
+device_no db 0x00
 device_count db 0x00
 times 510-($-$$) db 0x00
 db 0x55

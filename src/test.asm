@@ -4,10 +4,16 @@ mov ds,ax
 
 
 enumerate:
-	cmp byte [bus_no],0xFF		; there could be 32 devices in each bus
 	cmp byte [device_no],0x1F	; there could be 256 buses
 	je increment_bus_no 		
+	cmp byte [bus_no],0xFF		; there could be 32 devices in each bus
 	je end
+
+	;   31    30-24      23-16         15-11              10-8              7-2        1-0
+	; +---+----------+------------+---------------+-----------------+-----------------+----+
+	; | E | Reserved | Bus Number | Device Number | Function Number | Register Number | 00 |
+	; +---+----------+------------+---------------+-----------------+-----------------+----+
+
 	mov eax,0
 	or al,[bus_no]
 	shl eax,5

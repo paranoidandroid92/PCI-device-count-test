@@ -4,45 +4,51 @@
      4                                  
      5                                  
      6                                  enumerate:
-     7 00000005 803E[6500]1F            	cmp byte [device_no],0x1F
-     8 0000000A 7441                    	je increment_bus_no
-     9 0000000C 803E[6400]FF            	cmp byte [bus_no],0xFF
+     7 00000005 803E[6500]1F            	cmp byte [device_no],0x1F	; there could be 256 buses
+     8 0000000A 7441                    	je increment_bus_no 		
+     9 0000000C 803E[6400]FF            	cmp byte [bus_no],0xFF		; there could be 32 devices in each bus
     10 00000011 7446                    	je end
-    11 00000013 66B800000000            	mov eax,0
-    12 00000019 0A06[6400]              	or al,[bus_no]
-    13 0000001D 66C1E005                	shl eax,5
-    14 00000021 0A06[6500]              	or al,[device_no]
-    15 00000025 66C1E00B                	shl eax,11
-    16 00000029 660D00000080            	or eax,0x80000000
-    17                                  
-    18 0000002F 8B16[6000]              	mov dx,[CONFIG_ADDRESS]
-    19 00000033 66EF                    	out dx,eax
-    20 00000035 8B16[6200]              	mov dx,[CONFIG_DATA]
-    21 00000039 66ED                    	in eax,dx
-    22 0000003B 8006[6500]01            	add byte [device_no],1
-    23 00000040 6683F8FF                	cmp eax,0xFFFFFFFF
-    24 00000044 74BF                    	je enumerate
-    25                                  increment:
-    26 00000046 8006[6600]01            	add byte [device_count],1
-    27 0000004B EBB8                    	jmp enumerate
-    28                                  increment_bus_no:
-    29 0000004D 8006[6400]01            	add byte [bus_no],1
-    30 00000052 C606[6500]00            	mov byte [device_no],0
-    31 00000057 EBAC                    	jmp enumerate
-    32                                  
-    33                                  end:
-    34 00000059 66A1[6600]              	mov dword eax,[device_count]
-    35 0000005D F4                      	hlt
-    36 0000005E EBF9                    	jmp end
-    37                                  
+    11                                  
+    12                                  	;   31    30-24 	 23-16		    15-11 			  10-8		 		7-2		    1-0
+    13                                  	; +---+----------+------------+---------------+-----------------+-----------------+----+
+    14                                  	; | E | Reserved | Bus Number | Device Number | Function Number | Register Number | 00 |
+    15                                  	; +---+----------+------------+---------------+-----------------+-----------------+----+
+    16                                  
+    17 00000013 66B800000000            	mov eax,0
+    18 00000019 0A06[6400]              	or al,[bus_no]
+    19 0000001D 66C1E005                	shl eax,5
+    20 00000021 0A06[6500]              	or al,[device_no]
+    21 00000025 66C1E00B                	shl eax,11
+    22 00000029 660D00000080            	or eax,0x80000000
+    23                                  
+    24 0000002F 8B16[6000]              	mov dx,[CONFIG_ADDRESS]
+    25 00000033 66EF                    	out dx,eax
+    26 00000035 8B16[6200]              	mov dx,[CONFIG_DATA]
+    27 00000039 66ED                    	in eax,dx
+    28 0000003B 8006[6500]01            	add byte [device_no],1
+    29 00000040 6683F8FF                	cmp eax,0xFFFFFFFF			; returns 0xFFFFFFFF for non-existing devices
+    30 00000044 74BF                    	je enumerate
+    31                                  increment:
+    32 00000046 8006[6600]01            	add byte [device_count],1
+    33 0000004B EBB8                    	jmp enumerate
+    34                                  increment_bus_no:
+    35 0000004D 8006[6400]01            	add byte [bus_no],1
+    36 00000052 C606[6500]00            	mov byte [device_no],0
+    37 00000057 EBAC                    	jmp enumerate
     38                                  
-    39                                  	
-    40                                  
-    41 00000060 F80C                    CONFIG_ADDRESS dw 0x0CF8
-    42 00000062 FC0C                    CONFIG_DATA dw 0x0CFC
-    43 00000064 FF                      bus_no db 0xFF
-    44 00000065 1F                      device_no db 0x1F
-    45 00000066 00                      device_count db 0x00
-    46 00000067 00<rept>                times 510-($-$$) db 0x00
-    47 000001FE 55                      db 0x55
-    48 000001FF AA                      db 0xAA
+    39                                  end:
+    40 00000059 66A1[6600]              	mov dword eax,[device_count]
+    41 0000005D F4                      	hlt
+    42 0000005E EBF9                    	jmp end
+    43                                  
+    44                                  
+    45                                  	
+    46                                  
+    47 00000060 F80C                    CONFIG_ADDRESS dw 0x0CF8		; PCI Address Port
+    48 00000062 FC0C                    CONFIG_DATA dw 0x0CFC			; PCI Data Port
+    49 00000064 FF                      bus_no db 0xFF
+    50 00000065 1F                      device_no db 0x1F
+    51 00000066 00                      device_count db 0x00
+    52 00000067 00<rept>                times 510-($-$$) db 0x00
+    53 000001FE 55                      db 0x55
+    54 000001FF AA                      db 0xAA

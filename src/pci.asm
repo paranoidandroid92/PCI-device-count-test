@@ -16,7 +16,9 @@ enumerate:
 	or al,[bus_no]
 	shl eax,5
 	or al,[device_no]
-	shl eax,11
+	shl eax,9
+	or al,[register_no]
+	shl eax,2
 	or eax,0x80000000
 
 	mov dx,[CONFIG_ADDRESS]
@@ -53,6 +55,7 @@ CONFIG_DATA dw 0x0CFC			; PCI Data Port
 bus_no db 0x00
 device_no db 0x00
 device_count dw 0x0000
+register_no db 0x00
 iteration_count dw 0x000000		; iteration count for debug purposes. 
 								; should be equal to 8192(0x2000) at the end of enumeration (256 * 32 = 8192)
 times 510-($-$$) db 0x00

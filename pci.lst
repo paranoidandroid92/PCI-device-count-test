@@ -4,8 +4,8 @@
      4                                  
      5                                  
      6                                  enumerate:
-     7 00000005 803E[7300]20            	cmp byte [device_no],0x20	; there could be 32 devices in each bus
-     8 0000000A 743F                    	je increment_bus_no 		
+     7 00000005 803E[7B00]20            	cmp byte [device_no],0x20	; there could be 32 devices in each bus
+     8 0000000A 7447                    	je increment_bus_no 		
      9                                  
     10                                  	;   31    30-24      23-16         15-11              10-8              7-2        1-0
     11                                  	; +---+----------+------------+---------------+-----------------+-----------------+----+
@@ -13,48 +13,51 @@
     13                                  	; +---+----------+------------+---------------+-----------------+-----------------+----+
     14                                  
     15 0000000C 66B800000000            	mov eax,0
-    16 00000012 0A06[7200]              	or al,[bus_no]
+    16 00000012 0A06[7A00]              	or al,[bus_no]
     17 00000016 66C1E005                	shl eax,5
-    18 0000001A 0A06[7300]              	or al,[device_no]
-    19 0000001E 66C1E00B                	shl eax,11
-    20 00000022 660D00000080            	or eax,0x80000000
-    21                                  
-    22 00000028 8B16[6E00]              	mov dx,[CONFIG_ADDRESS]
-    23 0000002C 66EF                    	out dx,eax
-    24 0000002E 8B16[7000]              	mov dx,[CONFIG_DATA]
-    25 00000032 66ED                    	in eax,dx
-    26                                  
-    27 00000034 8306[7600]01            	add word [iteration_count],1
-    28 00000039 8006[7300]01            	add byte [device_no],1
-    29 0000003E 6683F8FF                	cmp eax,0xFFFFFFFF			; returns 0xFFFFFFFF for non-existing devices
-    30 00000042 74C1                    	je enumerate
-    31 00000044 8306[7400]01            	add word [device_count],1
-    32 00000049 EBBA                    	jmp enumerate
-    33                                  increment_bus_no:
-    34 0000004B 803E[7200]FF            	cmp byte [bus_no],0xFF		; there could be 256 buses
-    35 00000050 740C                    	je end
-    36 00000052 8006[7200]01            	add byte [bus_no],1
-    37 00000057 C606[7300]00            	mov byte [device_no],0
-    38 0000005C EBA7                    	jmp enumerate
-    39                                  
-    40                                  end:
-    41 0000005E 6631C0                  	xor eax,eax
-    42 00000061 A1[7400]                	mov word ax,[device_count]
-    43 00000064 6631C9                  	xor ecx,ecx
-    44 00000067 8B0E[7600]              	mov word cx,[iteration_count]
-    45 0000006B F4                      	hlt
-    46 0000006C EBF0                    	jmp end
-    47                                  
-    48                                  
-    49                                  	
+    18 0000001A 0A06[7B00]              	or al,[device_no]
+    19 0000001E 66C1E009                	shl eax,9
+    20 00000022 0A06[7E00]              	or al,[register_no]
+    21 00000026 66C1E002                	shl eax,2
+    22 0000002A 660D00000080            	or eax,0x80000000
+    23                                  
+    24 00000030 8B16[7600]              	mov dx,[CONFIG_ADDRESS]
+    25 00000034 66EF                    	out dx,eax
+    26 00000036 8B16[7800]              	mov dx,[CONFIG_DATA]
+    27 0000003A 66ED                    	in eax,dx
+    28                                  
+    29 0000003C 8306[7F00]01            	add word [iteration_count],1
+    30 00000041 8006[7B00]01            	add byte [device_no],1
+    31 00000046 6683F8FF                	cmp eax,0xFFFFFFFF			; returns 0xFFFFFFFF for non-existing devices
+    32 0000004A 74B9                    	je enumerate
+    33 0000004C 8306[7C00]01            	add word [device_count],1
+    34 00000051 EBB2                    	jmp enumerate
+    35                                  increment_bus_no:
+    36 00000053 803E[7A00]FF            	cmp byte [bus_no],0xFF		; there could be 256 buses
+    37 00000058 740C                    	je end
+    38 0000005A 8006[7A00]01            	add byte [bus_no],1
+    39 0000005F C606[7B00]00            	mov byte [device_no],0
+    40 00000064 EB9F                    	jmp enumerate
+    41                                  
+    42                                  end:
+    43 00000066 6631C0                  	xor eax,eax
+    44 00000069 A1[7C00]                	mov word ax,[device_count]
+    45 0000006C 6631C9                  	xor ecx,ecx
+    46 0000006F 8B0E[7F00]              	mov word cx,[iteration_count]
+    47 00000073 F4                      	hlt
+    48 00000074 EBF0                    	jmp end
+    49                                  
     50                                  
-    51 0000006E F80C                    CONFIG_ADDRESS dw 0x0CF8		; PCI Address Port
-    52 00000070 FC0C                    CONFIG_DATA dw 0x0CFC			; PCI Data Port
-    53 00000072 00                      bus_no db 0x00
-    54 00000073 00                      device_no db 0x00
-    55 00000074 0000                    device_count dw 0x0000
-    56 00000076 0000                    iteration_count dw 0x000000		; iteration count for debug purposes. 
-    57                                  								; should be equal to 8192(0x2000) at the end of enumeration (256 * 32 = 8192)
-    58 00000078 00<rept>                times 510-($-$$) db 0x00
-    59 000001FE 55                      db 0x55
-    60 000001FF AA                      db 0xAA
+    51                                  	
+    52                                  
+    53 00000076 F80C                    CONFIG_ADDRESS dw 0x0CF8		; PCI Address Port
+    54 00000078 FC0C                    CONFIG_DATA dw 0x0CFC			; PCI Data Port
+    55 0000007A 00                      bus_no db 0x00
+    56 0000007B 00                      device_no db 0x00
+    57 0000007C 0000                    device_count dw 0x0000
+    58 0000007E 01                      register_no db 0x01
+    59 0000007F 0000                    iteration_count dw 0x000000		; iteration count for debug purposes. 
+    60                                  								; should be equal to 8192(0x2000) at the end of enumeration (256 * 32 = 8192)
+    61 00000081 00<rept>                times 510-($-$$) db 0x00
+    62 000001FE 55                      db 0x55
+    63 000001FF AA                      db 0xAA

@@ -1,0 +1,7 @@
+mov dx,0x01F7
+in al,dx
+mov dx,0x0376
+in al,dx
+times 510-($-$$) db 0x00
+db 0x55
+db 0xAA

@@ -1,0 +1,7 @@
+     1 00000000 BAF701                  mov dx,0x01F7
+     2 00000003 EC                      in al,dx
+     3 00000004 BA7603                  mov dx,0x0376
+     4 00000007 EC                      in al,dx
+     5 00000008 00<rept>                times 510-($-$$) db 0x00
+     6 000001FE 55                      db 0x55
+     7 000001FF AA                      db 0xAA

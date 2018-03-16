@@ -4,9 +4,9 @@ bochsFolder="/home/potato/Desktop/Bochs Folder"
 src="$folder/src"
 bin="$folder/bin"
 cd "$folder"
-nasm -f bin "$src/test.asm" -l test.lst -o "$bin/test"
-sudo dd if="$bin/test" of="$bochsFolder/test.iso" bs=512 count=1 | hexdump -C
-sudo chmod u=rwx,g=rwx,o=rwx "$bochsFolder/test.iso"
+nasm -f bin "$src/pci.asm" -l pci.lst -o "$bin/pci"
+sudo dd if="$bin/pci" of="$bochsFolder/pci.iso" bs=512 count=1 | hexdump -C
+sudo chmod u=rwx,g=rwx,o=rwx "$bochsFolder/pci.iso"
 cd "$bochsFolder"
 bochs
 $SHELL

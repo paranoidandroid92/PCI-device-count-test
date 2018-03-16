@@ -26,9 +26,9 @@ enumerate:
 	mov dx,[CONFIG_DATA]
 	in eax,dx
 
-	add word [iteration_count],1
+	add word [it_count],1
 	add byte [device_no],1
-	cmp eax,0xFFFFFFFF			; returns 0xFFFFFFFF for non-existing devices
+	cmp eax,0xFFFFFFFF			; eax is 0xFFFFFFFF for non-existing devices
 	je enumerate
 	add word [device_count],1
 	jmp enumerate
@@ -43,7 +43,7 @@ end:
 	xor eax,eax
 	mov word ax,[device_count]
 	xor ecx,ecx
-	mov word cx,[iteration_count]
+	mov word cx,[it_count]; 	; should be equal to 8192(0x2000) at the end of enumeration (256 * 32 = 8192)
 	hlt
 	jmp end
 
@@ -56,8 +56,8 @@ bus_no db 0x00
 device_no db 0x00
 device_count dw 0x0000
 register_no db 0x00
-iteration_count dw 0x000000		; iteration count for debug purposes. 
-								; should be equal to 8192(0x2000) at the end of enumeration (256 * 32 = 8192)
+it_count dw 0x000000			; iteration count for debug purposes. 
+								
 times 510-($-$$) db 0x00
 db 0x55
 db 0xAA

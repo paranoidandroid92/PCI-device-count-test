@@ -55,7 +55,7 @@
     55 0000007A 00                      bus_no db 0x00
     56 0000007B 00                      device_no db 0x00
     57 0000007C 0000                    device_count dw 0x0000
-    58 0000007E 01                      register_no db 0x01
+    58 0000007E 00                      register_no db 0x00
     59 0000007F 0000                    iteration_count dw 0x000000		; iteration count for debug purposes. 
     60                                  								; should be equal to 8192(0x2000) at the end of enumeration (256 * 32 = 8192)
     61 00000081 00<rept>                times 510-($-$$) db 0x00

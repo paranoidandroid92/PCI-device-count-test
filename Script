@@ -5,8 +5,8 @@ src="$folder/src"
 bin="$folder/bin"
 cd "$folder"
 nasm -f bin "$src/pci.asm" -l pci.lst -o "$bin/pci"
-sudo dd if="$bin/pci" of="$bochsFolder/pci.iso" bs=512 count=1 | hexdump -C
-sudo chmod u=rwx,g=rwx,o=rwx "$bochsFolder/pci.iso"
+sudo dd if="$bin/pci" of="$bochsFolder/test.iso" bs=512 count=1 | hexdump -C
+sudo chmod u=rwx,g=rwx,o=rwx "$bochsFolder/test.iso"
 cd "$bochsFolder"
 bochs
 $SHELL

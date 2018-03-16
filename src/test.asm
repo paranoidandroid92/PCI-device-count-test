@@ -4,9 +4,9 @@ mov ds,ax
 
 
 enumerate:
+	cmp byte [bus_no],0xFF		; there could be 32 devices in each bus
 	cmp byte [device_no],0x1F	; there could be 256 buses
 	je increment_bus_no 		
-	cmp byte [bus_no],0xFF		; there could be 32 devices in each bus
 	je end
 	mov eax,0
 	or al,[bus_no]

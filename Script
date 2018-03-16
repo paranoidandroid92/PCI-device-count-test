@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 folder="/home/potato/Desktop/PCI"
 bochsFolder="/home/potato/Desktop/Bochs Folder"
+src="$folder/src"
+bin="$folder/bin"
 cd "$folder"
-nasm -f bin test.asm -l test.lst
-sudo dd if="$folder/test" of="$bochsFolder/test.iso" bs=512 count=1 | hexdump -C
+nasm -f bin "$src/test.asm" -l test.lst -o "$bin/test"
+sudo dd if="$bin/test" of="$bochsFolder/test.iso" bs=512 count=1 | hexdump -C
 sudo chmod u=rwx,g=rwx,o=rwx "$bochsFolder/test.iso"
 cd "$bochsFolder"
 bochs

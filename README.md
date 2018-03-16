@@ -1,2 +1,2 @@
 PCI  
-##find pci device count in all buses  
+##find connected pci device count  
